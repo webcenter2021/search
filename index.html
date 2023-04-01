@@ -35,11 +35,13 @@
 
             // Loop through each line in the text file
             searchData.split('\n').forEach(line => {
-              const [title, description, url] = line.split('|');
+              const [title, description, url, keywords] = line.split('|');
+              const keywordsArray = keywords.split(',');
               if (title.toLowerCase().includes(query.toLowerCase()) ||
-                  description.toLowerCase().includes(query.toLowerCase())) {
-                // If the query matches the title or description, add to results
-                results.push({title, description, url});
+                  description.toLowerCase().includes(query.toLowerCase()) ||
+                  keywordsArray.some(keyword => keyword.toLowerCase().includes(query.toLowerCase()))) {
+                // If the query matches the title, description, or any keyword, add to results
+                results.push({title, description, url, keywords: keywordsArray});
               }
             });
 
@@ -64,6 +66,10 @@
         const description = document.createElement('p');
         description.innerText = results[i].description;
         li.appendChild(description);
+
+        const keywords = document.createElement('p');
+        keywords.innerText = 'Keywords: ' + results[i].keywords.join(', ');
+        li.appendChild(keywords);
 
         const link = document.createElement('a');
         link.href = results[i].url;
